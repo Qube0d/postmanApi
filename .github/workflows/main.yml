@@ -6,17 +6,16 @@ on:
 jobs:
   test-api:
     runs-on: ubuntu-latest
-    concurrency: ci-${{github.ref}}
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2.3.1
-
-
-      # INstall Node on the runner
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
+        
+    # INstall Node on the runner
       - name: Install Node
         uses: actions/setup-node@v1
         with:
           node-version: '18'
+
 
 
       # Install the newman command line utility and also install the html extra reporter
@@ -26,26 +25,43 @@ jobs:
           npm install -g newman-reporter-htmlextra
       # Make directory to upload the test results
       - name: Make Directory for results
-        run: mkdir -p testResults
+        run: mkdir -p docs
 
 
       # Run the POSTMAN collection
       - name: Run POSTMAN collection
         if: failure()
         run: |
-          newman run petstore.collection.json -r cli,htmlextra --reporter-htmlextra-export testResults/htmlreport.html --reporter-htmlextra-darkTheme  > testResults/runreport1.html
+          newman run petstore.collection.json -r cli,htmlextra --reporter-htmlextra-export docs/htmlreport.html --reporter-htmlextra-darkTheme  > docs/runreport1.html
       # Upload the contents of Test Results directory to workspace
       - name: Output the run Details
         if: always()
         uses: actions/upload-artifact@v2
         with:
           name: RunReports
-          path: testResults
+          path: docs
           
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.5
         with:
-          branch: gh-pages
-          folder: testResults
+          #branch: gh-pages
+          #folder: docs
+        
+          branch: main
+          folder: ./docs
+        
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+
+      
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
