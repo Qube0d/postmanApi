@@ -1,0 +1,823 @@
+{
+	"info": {
+		"_postman_id": "4e3fd9ae-68e2-4c41-bb26-ab071f3f62ba",
+		"name": "store",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "20166668"
+	},
+	"item": [
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Create product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//imported the same tests for post requests\r",
+									"eval(pm.environment.get(\"globalTest\"));\r",
+									"//Save the product id to global variables\r",
+									"let jsonDataProductId = pm.response.json();\r",
+									"pm.collectionVariables.set(\"newGeneratedProductId\",jsonDataProductId.id)\r",
+									"\r",
+									"\r",
+									"var data = JSON.parse(responseBody)\r",
+									"var schema = {\r",
+									"  \r",
+									"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"name\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"price\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"sku\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"description\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"id\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"name\",\r",
+									"    \"price\",\r",
+									"    \"sku\",\r",
+									"    \"description\",\r",
+									"    \"id\"\r",
+									"  ]\r",
+									"}\r",
+									"\r",
+									"\r",
+									"pm.test(\"Body is correct\", function(){\r",
+									"    pm.expect(tv4.validate(data,schema)).to.be.true\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"{{newProductName}}\",\r\n    \"price\": {{newProductPrice}},\r\n    \"sku\": {{newProductSku}},\r\n    \"description\":\"{{newProductDescription}}\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/products"
+					},
+					"response": []
+				},
+				{
+					"name": "Create product negative",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"orange\",\r\n    \"price\": 8,\r\n    \"sku\": 123321123,\r\n    \"description\": \"wouh\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/products"
+					},
+					"response": []
+				},
+				{
+					"name": "Get product by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"eval(pm.environment.get(\"globalTestGetPutDel\"));\r",
+									"\r",
+									"const newGeneratedProductId=pm.collectionVariables.get(\"newGeneratedProductId\")\r",
+									"const newProductName=pm.collectionVariables.get(\"newProductName\")\r",
+									"const newProductPrice=pm.collectionVariables.get(\"newProductPrice\")\r",
+									"const newProductSku=pm.collectionVariables.get(\"newProductSku\")\r",
+									"const newProductDescription=pm.collectionVariables.get(\"newProductDescription\")\r",
+									"\r",
+									"var data = JSON.parse(responseBody)\r",
+									"var schema = {\r",
+									"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"name\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"price\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"sku\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"description\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"id\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"name\",\r",
+									"    \"price\",\r",
+									"    \"sku\",\r",
+									"    \"description\",\r",
+									"    \"id\"\r",
+									"  ]\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Body is correct\", function(){\r",
+									"    pm.expect(tv4.validate(data,schema)).to.be.true\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/products/{{newGeneratedProductId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "List products",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Content-Type is present\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": "{{baseUrl}}/products"
+					},
+					"response": []
+				},
+				{
+					"name": "Sorting products by name (asc)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"var _ = require('lodash'),\r",
+									"\r",
+									"    // Parse the array returned in the response body (It is probably a stringified response)\r",
+									"    responseArray = JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test('Products names are in sorted order', () => {\r",
+									"    // Use the responseArray here\r",
+									"    var expectedSortedOrder = _.orderBy(responseArray, ['name'],['asc']);\r",
+									"\r",
+									"    pm.expect(responseArray).to.eql(expectedSortedOrder);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products?sortOrder=ASC&sortKey=name",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "sortOrder",
+									"value": "ASC"
+								},
+								{
+									"key": "sortKey",
+									"value": "name"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sorting products by name (desc)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var _ = require('lodash'),\r",
+									"\r",
+									"    // Parse the array returned in the response body (It is probably a stringified response)\r",
+									"    responseArray = JSON.parse(responseBody);\r",
+									"\r",
+									"pm.test('Products names are in sorted order', () => {\r",
+									"    // Use the responseArray here\r",
+									"    var expectedSortedOrder = _.orderBy(responseArray, ['name'],['desc']);\r",
+									"\r",
+									"    pm.expect(responseArray).to.eql(expectedSortedOrder);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products?sortOrder=DESC&sortKey=name",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "sortOrder",
+									"value": "DESC"
+								},
+								{
+									"key": "sortKey",
+									"value": "name"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pagination",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Check page size 1 have only 1 products\", function () {\r",
+									"    pm.expect(pm.response.json().length).to.equal(1);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products?page=1&pageSize=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"eval(pm.environment.get(\"globalTestGetPutDel\"));\r",
+									"const newGeneratedProductId=pm.collectionVariables.get(\"newGeneratedProductId\")\r",
+									"const updateNewProductName=pm.collectionVariables.get(\"updateNewProductName\")\r",
+									"const updateNewProductPrice=pm.collectionVariables.get(\"updateNewProductPrice\")\r",
+									"const updateNewProductSku=pm.collectionVariables.get(\"updateNewProductSku\")\r",
+									"const updateNewProductDescription=pm.collectionVariables.get(\"updateNewProductDescription\")\r",
+									"\r",
+									"\r",
+									"pm.test(\"Check that response returned the correct id \", function () {\r",
+									"    pm.expect(pm.response.json().id).to.eql(pm.collectionVariables.get(\"newGeneratedProductId\"));\r",
+									"});\r",
+									"var data = JSON.parse(responseBody)\r",
+									"var schema ={\r",
+									"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"name\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"price\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"sku\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"description\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"id\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"name\",\r",
+									"    \"price\",\r",
+									"    \"sku\",\r",
+									"    \"description\",\r",
+									"    \"id\"\r",
+									"  ]\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":{{newGeneratedProductId}},\r\n    \"name\": \"{{updateNewProductName}}\",\r\n    \"price\": {{updateNewProductPrice}},\r\n    \"sku\": {{updateNewProductSku}},\r\n    \"description\":\"{{updateNewProductDescription}}\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/products"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove product by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//import tests for all get,put,del requeststab\r",
+									"eval(pm.environment.get(\"globalTestGetPutDel\"));\r",
+									"\r",
+									"const newGeneratedProductId=pm.collectionVariables.get(\"newGeneratedProductId\")\r",
+									"const updateNewProductName=pm.collectionVariables.get(\"updateNewProductName\")\r",
+									"const updateNewProductPrice=pm.collectionVariables.get(\"updateNewProductPrice\")\r",
+									"const updateNewProductSku=pm.collectionVariables.get(\"updateNewProductSku\")\r",
+									"const updateNewProductDescription=pm.collectionVariables.get(\"updateNewProductDescription\")\r",
+									"\r",
+									"pm.test(\"Check that response returned the correct id \", function () {\r",
+									"    pm.expect(pm.response.json().id).to.eql(pm.collectionVariables.get(\"newGeneratedProductId\"));\r",
+									"});\r",
+									"\r",
+									"var data = JSON.parse(responseBody)\r",
+									"var schema ={\r",
+									"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"name\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"price\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"sku\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"description\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"id\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"name\",\r",
+									"    \"price\",\r",
+									"    \"sku\",\r",
+									"    \"description\",\r",
+									"    \"id\"\r",
+									"  ]\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/products/{{newGeneratedProductId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "List products after del",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Content-Type is present\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/products"
+					},
+					"response": []
+				},
+				{
+					"name": "Get deleted product by ID(negative test)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"  pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"  });\r",
+									"\r",
+									"  pm.test(\"Status message is 'Created'\", function () {\r",
+									"        pm.response.to.have.status(\"Not Found\");\r",
+									"  });\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": "{{baseUrl}}/products/{{newGeneratedProductId}}"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "List orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/orders"
+					},
+					"response": []
+				},
+				{
+					"name": "Get order by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/orders/3"
+					},
+					"response": []
+				},
+				{
+					"name": "Create order",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"order5\",\r\n    \"sku\": 123425445656765\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/orders"
+					},
+					"response": []
+				},
+				{
+					"name": "Update order",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 4,\r\n    \"name\": \"order5\",\r\n    \"sku\": 123425445656765\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/orders"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove order by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/orders/4"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "List users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/users"
+					},
+					"response": []
+				},
+				{
+					"name": "Get user by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/users/3"
+					},
+					"response": []
+				},
+				{
+					"name": "Create user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Dream\",\r\n    \"lastName\": \"Real\",\r\n    \"email\": \"dream.real@gmail.com\",\r\n    \"dateOfBirth\": \"2001-10-99\",\r\n    \"emailVerified\": true,\r\n    \"signUpDate\": \"2019-08-24\",\r\n    \"status\": \"active\",\r\n    \"level\": \"lord\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/users"
+					},
+					"response": []
+				},
+				{
+					"name": "Update user",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Ilon\",\r\n    \"lastName\": \"Mask\",\r\n    \"email\": \"ilon.mask@gmail.com\",\r\n    \"dateOfBirth\": \"2001-10-99\",\r\n    \"emailVerified\": true,\r\n    \"signUpDate\": \"2019-08-24\",\r\n    \"status\": \"active\",\r\n    \"level\": \"lord\",\r\n    \"id\": 10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/users"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove user by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/users/10"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"//Create data for the new product",
+					"pm.collectionVariables.set(\"newProductName\",\"orange1\")",
+					"pm.collectionVariables.set(\"newProductPrice\",8)",
+					"pm.collectionVariables.set(\"newProductSku\",123321123)",
+					"pm.collectionVariables.set(\"newProductDescription\",\"wouh\")",
+					"",
+					"//Update data for the new product",
+					"pm.collectionVariables.set(\"updateNewProductName\",\"davidoff\")",
+					"pm.collectionVariables.set(\"updateNewProductPrice\",85)",
+					"pm.collectionVariables.set(\"updateNewProductSku\",123321123)",
+					"pm.collectionVariables.set(\"updateNewProductDescription\",\"smoke are killing\")",
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.test(\"Response time is less than 200ms\", function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(200);",
+					"});",
+					"pm.test(\"Content-Type is present\", function () {",
+					"    pm.response.to.have.header(\"Content-Type\");",
+					"});",
+					"",
+					"",
+					"",
+					"",
+					"pm.environment.set(\"globalTest\", function globalTest() {",
+					"",
+					"  pm.test(\"Status code is 201\", function () {",
+					"    pm.response.to.have.status(201);",
+					"  });",
+					"",
+					"  pm.test(\"Status message is 'Created'\", function () {",
+					"        pm.response.to.have.status(\"Created\");",
+					"  });",
+					"  pm.test(\"Correct response format JSON\", function () {",
+					"        pm.response.to.have.jsonBody();",
+					"  });",
+					"  pm.test(\"Content-Type header is application/json charset=utf-8\", () => {",
+					"        pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
+					"  });",
+					"  } + '; globalTest();');",
+					"",
+					"",
+					"  //Tests for all positive get/put/del requests",
+					"pm.environment.set(\"globalTestGetPutDel\", function globalTestGetPutDel() {",
+					"",
+					"    pm.test(\"Status code is 200\", function () {",
+					"        pm.response.to.have.status(200);",
+					"});",
+					"pm.test(\"Status message is 'OK'\", function () {",
+					"        pm.response.to.have.status(\"OK\");",
+					"  });",
+					"pm.test(\"Content-Type header is application/json charset=utf-8\", () => {",
+					"        pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
+					"});",
+					"",
+					"} + '; globalTestGetPutDel();');"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "newProductName",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "newProductPrice",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "newProductSku",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "newProductDescription",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "newGeneratedProductId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "updateNewProductName",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "updateNewProductPrice",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "updateNewProductSku",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "updateNewProductDescription",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
