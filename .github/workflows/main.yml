@@ -1,10 +1,10 @@
-name: Postman-newman-API-testing
+name: Test-Build
 on:
   push:
     branches:
       - main
 jobs:
-  test-api:
+   test-api:
     runs-on: ubuntu-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -30,20 +30,38 @@ jobs:
 
       # Run the POSTMAN collection
       - name: Run POSTMAN collection
-        if: failure()
         run: |
-          newman run petstore.collection.json -r cli,htmlextra --reporter-htmlextra-export testResults/index.html
+          newman run petstore.collection.json -r cli,htmlextra --reporter-htmlextra-export testResults/index.html 
+      # Upload the contents of Test Results directory to workspace
+      #- name: Output the run Details
+       # uses: actions/upload-artifact@v3
+        #if: always()
+        #with:
+         # name: RunReports
+         # path: ./testResults
+      #- name: Deploy to pages
+       # if: always()
+       # uses: peaceiris/actions-gh-pages@v3.7.3
+       # with:
+        #    github_token: ${{ secrets.GITHUB_TOKEN }}
+         #   publish_branch: gh-pages
+          #  publish_dir: ./testResults
+            
+            
+            
       # Upload the contents of Test Results directory to workspace
       - name: Output the run Details
-        uses: actions/upload-artifact@v3
         if: always()
+        uses: actions/upload-artifact@v2
         with:
           name: RunReports
-          path: ./testResults
-      - name: Deploy to pages
+          path: testResults
+          
+      - name: Deploy 🚀
         if: always()
-        uses: peaceiris/actions-gh-pages@v3.7.3
+        uses: JamesIves/github-pages-deploy-action@4.1.5
         with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            publish_branch: gh-pages
-            publish_dir: ./testResults
+          branch: gh-pages
+          folder: testResults
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
