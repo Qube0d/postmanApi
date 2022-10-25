@@ -27,7 +27,4 @@ Routes `/products`, `/orders` and `/users`. Below is a table of supported operat
 6. Run product folder tests in postman
 
 ### GitHub action
-To see the result of testing on the GitHub page click the link on the GitHub page in the about block from the right sidebar(the top right) on this page.
-
-On Github page we can see the result of API testing from file petstore.collection.json
-
+To see the result of testing on the GitHub page click the link in "About" section
