@@ -23,7 +23,7 @@ Routes `/products`, `/orders` and `/users`. Below is a table of supported operat
 | DELETE   | /products/:id | **e.g 3**  | **Deleted object** |
 
 
-5. Upload `store.collection.json v2.1` in Postman app
+5. Upload `storeV2.postman_collection` in Postman app
 6. Run product folder tests in postman
 
 ### GitHub action
